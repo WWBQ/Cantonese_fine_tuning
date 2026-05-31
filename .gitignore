@@ -1,0 +1,25 @@
+# 模型文件 (太大，上传到 Hugging Face)
+model/
+
+# 数据集 (太大，上传到 Hugging Face Datasets)
+cleaned_data/
+data/
+
+# llama.cpp 第三方依赖 (用 submodule 引用)
+llama.cpp/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+
+# 系统文件
+.DS_Store
+
+# 压缩包
+*.zip
+*.tar.gz
+*.bz2
