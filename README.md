@@ -1,42 +1,54 @@
-# 粤语微调 (Cantonese LLM Fine-tuning)
+# 粤语微调
 
-基于 Qwen2.5-7B-Instruct 微调的粤语翻译与对话模型。
+基于 **Qwen2.5-7B-Instruct** 的 LoRA 微调，做成粤语助手（问答 / 写作 / 对话），而不是翻译机。
 
-## 项目简介
+上一版用约 **213 万条粤普平行翻译** 训练，模型会把普通提问也拿去翻译。本轮改用约 **4.5 万条** 问答语料，并混入 **8,000** 条翻译以免完全忘掉翻译。行为评测：提问用粤语答、明确要求才翻译、违法请求拒绝。
 
-本项目使用 LoRA 对 Qwen2.5-7B-Instruct 进行微调，训练数据包含多个粤语-普通话平行语料库，总计约 213 万条训练样本。模型支持：
+权重体积太大，**不进 Git**。本仓库是数据清洗、训练脚本和实验记录。
 
-- 粤语 ↔ 普通话双向翻译
-- 粤语对话
-- 拒绝非法/危险请求
+## 训练配置
 
-## 训练
+| 项 | 值 |
+|---|---|
+| 底模 | Qwen2.5-7B-Instruct（训练时 4-bit QLoRA） |
+| 适配器 | LoRA r=16, α=32 |
+| 数据 | `mix_train.jsonl` 51,701 条（问答 43,701 + 翻译 8,000） |
+| 验证 | 问答 val 与翻译 val 分开记 loss |
+| 合并 | 未量化 FP16 底模 + LoRA（不要在 4-bit 上 merge） |
+| 导出 | `yue_qwen_fp16.gguf`、`yue_qwen_q4.gguf`（Q4_K_M） |
 
-- **基座模型**: Qwen2.5-7B-Instruct (4-bit 量化)
-- **训练框架**: Unsloth + TRL (SFTTrainer)
-- **微调方式**: LoRA (r=16, alpha=32)
-- **训练步数**: 10,000 steps
-- **硬件**: NVIDIA RTX 3090 (24GB)
-- **数据量**: 213 万条
+## 目录
 
-见 [`code/yue_train.ipynb`](code/yue_train.ipynb)
+```
+notebooks/yue_train.ipynb   # 实际训练
+scripts/prepare_qa.py       # 问答清洗 + 划分 + 混翻译
+scripts/test_lora.py        # GPU 上测 LoRA
+scripts/merge_model.py      # 合并到 FP16
+scripts/to_gguf.py          # HF → GGUF → Q4_K_M
+scripts/legacy/             # 旧翻译管线（不要再当主数据）
+docs/DATA_CARD.md
+deploy/Modelfile            # Ollama 配方（需本地 GGUF）
+```
 
-## 数据管线
-
-1. 多源数据下载 → 2. 双向翻译对构造 (粤↔普 3:1) → 3. MD5 去重 → 4. 训练/验证/测试集划分
-
-见 [`code/clean_yueyu.py`](code/clean_yueyu.py)
-
-## 模型下载
-
-模型文件托管在 Hugging Face：
-
-- [模型链接] (待上传)
-
-## 本地推理
+## 数据
 
 ```bash
-# Ollama 部署
-ollama create yue_qwen -f Modelfile
+python3 scripts/prepare_qa.py
+```
+
+产物在 `cleaned_data/qa/`（大体量 jsonl 不进 Git）。计数见 [`docs/DATA_CARD.md`](docs/DATA_CARD.md) 与 `cleaned_data/qa/stats.json`。
+
+## 本地推理（Ollama）
+
+把 `yue_qwen_q4.gguf` 放到 `model/` 后：
+
+```bash
+cd model
+ollama create yue_qwen -f ../deploy/Modelfile
 ollama run yue_qwen
 ```
+
+## 说明
+
+- 微调改的是**行为**（粤语助手、别乱翻译），不补百科知识。领域知识应接 RAG。
+- 不宣称母语级；语料来自已下载的开源粤语指令 / 对话 / 问答。

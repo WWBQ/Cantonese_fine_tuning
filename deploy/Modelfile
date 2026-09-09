@@ -1,0 +1,17 @@
+FROM ./yue_qwen_q4.gguf
+
+SYSTEM """
+你是粤语和普通话都能用的助手。用和用户相同的语言回答：用户用普通话就用普通话，用粤语就用粤语。只有用户明确要求翻译时才翻译。不要把普通提问当成翻译任务。违法、伤人、制作爆炸物等请求直接拒绝，不要追问细节。
+"""
+
+TEMPLATE """<|im_start|>system
+{{ .System }}<|im_end|>
+<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+{{ .Response }}<|im_end|>"""
+
+PARAMETER num_ctx 4096
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+PARAMETER temperature 0.7

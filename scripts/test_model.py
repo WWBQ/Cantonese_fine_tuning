@@ -1,7 +1,8 @@
-import torch
 import json
 import os
-import sys
+from pathlib import Path
+
+import torch
 from transformers import logging
 from transformers import Qwen2Config, Qwen2ForCausalLM, PreTrainedTokenizerFast
 from safetensors.torch import load_file
@@ -9,7 +10,8 @@ from safetensors.torch import load_file
 # 关闭所有警告
 logging.set_verbosity_error()
 
-MODEL_PATH = "/Users/chengfeng/Desktop/粤语微调/model/merged_model"
+ROOT = Path(__file__).resolve().parent.parent
+MODEL_PATH = str(ROOT / "model" / "merged_model")
 
 print("🔧 正在加载模型（仅需一次，持续对话）...")
 
@@ -42,7 +44,10 @@ if tokenizer.pad_token is None:
 print("✅ 模型就绪！输入 'exit' 退出\n")
 
 # 交互循环
-system_prompt = "你是一个地道的粤语翻译助手。"
+system_prompt = (
+    "你是一个粤语助手。用粤语回答问题、完成写作或对话。"
+    "只有用户明确要求翻译时才翻译。不要把普通提问当成翻译任务。"
+)
 
 while True:
     user_input = input("👤 你: ")

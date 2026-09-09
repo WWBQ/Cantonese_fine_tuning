@@ -2,8 +2,20 @@
 model/
 
 # 数据集 (太大，上传到 Hugging Face Datasets)
-cleaned_data/
+cleaned_data/*
+!cleaned_data/qa/
+cleaned_data/qa/*
+!cleaned_data/qa/stats.json
+!cleaned_data/qa/samples.jsonl
+!cleaned_data/qa/README.md
 data/
+
+# 清洗后的大体量 jsonl；stats / samples 要进仓库
+processed/qa/all.jsonl
+processed/qa/train.jsonl
+processed/qa/val.jsonl
+processed/qa/test.jsonl
+processed/qa/mix_train.jsonl
 
 # llama.cpp 第三方依赖 (用 submodule 引用)
 llama.cpp/

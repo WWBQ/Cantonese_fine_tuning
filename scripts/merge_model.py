@@ -1,17 +1,16 @@
+from pathlib import Path
+
 import torch
 import os
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
-# ---------- 设置镜像 ----------
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-# ---------- 正确配置 ----------
-# 关键修改：使用标准非量化版 Qwen2.5-7B-Instruct
-BASE_MODEL_NAME = "Qwen/Qwen2.5-7B-Instruct"
 
-# 本地 LoRA 适配器路径
-LORA_PATH = "../model/my_model/outputs_yue_qwen/checkpoint-10000"
-# 合并后模型保存路径
-MERGED_PATH = "../model/merged_model"
+ROOT = Path(__file__).resolve().parent.parent
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+BASE_MODEL_NAME = "Qwen/Qwen2.5-7B-Instruct"
+# 必须用未量化的 Qwen2.5-7B；不要用 adapter_config 里的 bnb-4bit
+LORA_PATH = str(ROOT / "model" / "my_model" / "yue_qwen_lora")
+MERGED_PATH = str(ROOT / "model" / "merged_model")
 
 
 # ----------------------------

@@ -1,0 +1,76 @@
+{
+  "seed": 42,
+  "system_prompt": "你是一个粤语助手。用粤语回答问题、完成写作或对话。只有用户明确要求翻译时才翻译。不要把普通提问当成翻译任务。",
+  "schema": [
+    "id",
+    "instruction",
+    "input",
+    "output",
+    "source",
+    "task",
+    "text"
+  ],
+  "filters": {
+    "min_instruction": 4,
+    "max_instruction": 2000,
+    "min_output": 8,
+    "max_output": 8000,
+    "require_cjk": true,
+    "dedup": "sha1(instruction+input+output)"
+  },
+  "sources": {
+    "yue-alpaca": {
+      "raw": 18649,
+      "kept": 17544,
+      "out_short": 1082,
+      "duplicate": 20,
+      "no_cjk": 2,
+      "identity": 1
+    },
+    "cantonese-dialogue": {
+      "raw": 15087,
+      "kept": 15009,
+      "out_short": 33,
+      "duplicate": 42,
+      "inst_short": 3
+    },
+    "allaspect-qa": {
+      "raw": 10998,
+      "header": 1,
+      "kept": 10991,
+      "out_short": 5,
+      "inst_short": 1
+    },
+    "wiki-doyouknow": {
+      "raw": 1569,
+      "kept": 1568,
+      "out_short": 1
+    },
+    "yue-harmful": {
+      "raw": 416,
+      "kept": 405,
+      "duplicate": 11
+    }
+  },
+  "kept_by_source": {
+    "yue-alpaca": 17544,
+    "allaspect-qa": 10991,
+    "cantonese-dialogue": 15009,
+    "wiki-doyouknow": 1568,
+    "yue-harmful": 405
+  },
+  "kept_by_task": {
+    "instruct": 17544,
+    "qa": 12559,
+    "dialogue": 15009,
+    "refuse": 405
+  },
+  "splits": {
+    "train": 43701,
+    "val": 908,
+    "test": 908,
+    "all": 45517,
+    "mix_train": 51701,
+    "translate_in_mix": 8000
+  }
+}
