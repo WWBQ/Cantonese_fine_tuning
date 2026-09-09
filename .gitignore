@@ -32,6 +32,7 @@ __pycache__/
 .DS_Store
 
 # 压缩包
-*.zip
+eval/compare_results.jsonl
+eval/compare_report.md
 *.tar.gz
 *.bz2

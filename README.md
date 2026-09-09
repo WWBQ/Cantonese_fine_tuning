@@ -38,7 +38,17 @@ python3 scripts/prepare_qa.py
 
 产物在 `cleaned_data/qa/`（大体量 jsonl 不进 Git）。计数见 [`docs/DATA_CARD.md`](docs/DATA_CARD.md) 与 `cleaned_data/qa/stats.json`。
 
-## 本地推理（Ollama）
+## 基座 vs 微调对比
+
+```bash
+python3 scripts/sample_compare_set.py          # 已生成 eval/compare_set.jsonl，可重抽
+ollama pull qwen2.5:7b                         # 基座，与微调用同一 system
+python3 scripts/compare_models.py --backend ollama \
+  --base qwen2.5:7b --old yue-translator --ft yue_qwen
+```
+
+报告在 `eval/compare_report.md`。看「未要求翻译却短译」的条数，并人工扫探针题。
+
 
 把 `yue_qwen_q4.gguf` 放到 `model/` 后：
 
